@@ -686,49 +686,53 @@ foreach ($a_filter as $filteri => $filterent):
 	<?php
 			if (isset($filterent['interface'])) {
 				$selected_interfaces = explode(',', $filterent['interface']);
-				unset($selected_descs);
-				foreach ($selected_interfaces as $interface) {
-					if (isset($ifdescs[$interface])) {
-						$selected_descs[] = $ifdescs[$interface];
-					} else {
-						switch ($interface) {
-						case 'l2tp':
-							if ($config['l2tp']['mode'] == 'server')
-								$selected_descs[] = 'L2TP VPN';
-							break;
-						case 'pppoe':
-							if (is_pppoe_server_enabled())
-								$selected_descs[] = 'PPPoE Server';
-							break;
-						case 'enc0':
-							if (ipsec_enabled())
-								$selected_descs[] = 'IPsec';
-							break;
-						case 'openvpn':
-							if  ($config['openvpn']['openvpn-server'] || $config['openvpn']['openvpn-client'])
-								$selected_descs[] = 'OpenVPN';
-							break;
-						default:
-							$selected_descs[] = $interface;
-							break;
+				if (count($iflist) == count($selected_interfaces)) {
+					echo 'ALL';
+				} else {
+					unset($selected_descs);
+					foreach ($selected_interfaces as $interface) {
+						if (isset($ifdescs[$interface])) {
+							$selected_descs[] = $ifdescs[$interface];
+						} else {
+							switch ($interface) {
+							case 'l2tp':
+								if ($config['l2tp']['mode'] == 'server')
+									$selected_descs[] = 'L2TP VPN';
+								break;
+							case 'pppoe':
+								if (is_pppoe_server_enabled())
+									$selected_descs[] = 'PPPoE Server';
+								break;
+							case 'enc0':
+								if (ipsec_enabled())
+									$selected_descs[] = 'IPsec';
+								break;
+							case 'openvpn':
+								if  ($config['openvpn']['openvpn-server'] || $config['openvpn']['openvpn-client'])
+									$selected_descs[] = 'OpenVPN';
+								break;
+							default:
+								$selected_descs[] = $interface;
+								break;
+							}
 						}
 					}
-				}
-				if (!empty($selected_descs)) {
-					$desclist = '';
-					$desclength = 0;
-					foreach ($selected_descs as $descid => $desc) {
-						$desclength += strlen($desc);
-						if ($desclength > 18) {
-							$desclist .= ',<br/>';
-							$desclength = 0;
-						} elseif ($desclist) {
-							$desclist .= ', ';
-							$desclength += 2;
+					if (!empty($selected_descs)) {
+						$desclist = '';
+						$desclength = 0;
+						foreach ($selected_descs as $descid => $desc) {
+							$desclength += strlen($desc);
+							if ($desclength > 18) {
+								$desclist .= ',<br/>';
+								$desclength = 0;
+							} elseif ($desclist) {
+								$desclist .= ', ';
+								$desclength += 2;
+							}
+							$desclist .= $desc;
 						}
-						$desclist .= $desc;
+						echo $desclist;
 					}
-					echo $desclist;
 				}
 			}
 	?>
